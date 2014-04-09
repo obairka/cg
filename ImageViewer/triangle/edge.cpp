@@ -4,6 +4,10 @@
 Edge::Edge(const TexturedPoint &a, const TexturedPoint &b) : a(a), b(b)
 {
 
+    if (a.y() > b.y()) {
+        std::swap(this->a,this->b);
+    }
+
     if(b.y() == a.y()){
         k = 0;
     } else

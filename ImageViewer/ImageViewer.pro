@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     triangle/texture.cpp \
     triangle/edge.cpp \
     triangle/texturedpoint.cpp \
-    drawpanel.cpp
+    drawpanel.cpp \
+    square.cpp
 
 HEADERS  += mainwindow.h \
     triangle/triangle.h \
@@ -28,3 +29,4 @@ HEADERS  += mainwindow.h \
     triangle/texture.h \
     canvas.h \
     drawpanel.h\
+    square.h

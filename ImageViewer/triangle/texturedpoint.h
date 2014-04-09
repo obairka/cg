@@ -1,17 +1,17 @@
 #ifndef TEXTUREDPOINT_H
 #define TEXTUREDPOINT_H
 
-#include <QPoint>
+#include <QPointF>
 #include <QColor>
 
-class TexturedPoint : public QPoint
+class TexturedPoint : public QPointF
 {
 private:
     double texX;
     double texY;
 public:
-    TexturedPoint(int X,  int Y, double texX, double texY);
-    TexturedPoint(int X,  int Y);
+    TexturedPoint(double X,  double Y, double texX, double texY);
+    TexturedPoint(double X,  double Y);
 
     void calcTextureCoordinates(const TexturedPoint& a, const TexturedPoint& b);
 
@@ -19,8 +19,6 @@ public:
     double getTexY() const;
     void setTexX(double value);
     void setTexY(double value);
-
-
 
     friend bool operator<(const TexturedPoint& a, const TexturedPoint& b)  {
         return a.y() < b.y();

@@ -2,14 +2,14 @@
 #include "texturedpoint.h"
 #include <cmath>
 
-TexturedPoint::TexturedPoint(int X, int Y):QPoint(X,Y)
+TexturedPoint::TexturedPoint(double X, double Y):QPointF(X,Y)
 {
     texX = INVALID;
     texY = INVALID;
 }
 
-TexturedPoint::TexturedPoint(int X, int Y, double texX, double texY)
-    : QPoint(X, Y), texX(texX), texY(texY)
+TexturedPoint::TexturedPoint(double X, double Y, double texX, double texY)
+    : QPointF(X, Y), texX(texX), texY(texY)
 {
 
 }

@@ -1,21 +1,32 @@
 #include <QObject>
 #include <QDebug>
 #include "mainwindow.h"
-#include "triangle/texturedpoint.h"
-#include "triangle/triangle.h"
+#include "square.h"
+
 MainWindow::MainWindow(int w, int h, QWidget *parent)
     : QMainWindow(parent), drawPanel(w, h, this)
 {
+    int size = w<h?w:h;
 
-    TexturedPoint a (200, 20, 0, 0);
-    TexturedPoint b (200, 300, 0, 1);
-    TexturedPoint c (300, 300, 1, 1);
+    double xc = w*1.0/2.0;
+    double yc = h*1.0/2.0;
 
-    Triangle triangle(b, a, c);
-    drawPanel.Canvas::clear();
-    triangle.draw(drawPanel);
-    triangle.rotate(90);
-    triangle.draw(drawPanel);
+    Square square(50, xc, yc );
+    square.setMax(w,h);
+    //square.draw(drawPanel);
+    //square.rotate(40);
+    //square.draw(drawPanel);
+
+    square.scaleX(5);
+    square.scaleY(5);
+
+    //square.setCenter(100,100);
+    square.draw(drawPanel);
+
+    drawPanel.drawBresenhamLine(QPoint(xc, 0), QPoint(xc, h-1), Qt::black);
+
+    drawPanel.drawBresenhamLine(QPoint(0, yc), QPoint(w-1, yc), Qt::black);
+
 
     setFixedSize(w,h);
     setCentralWidget(&drawPanel);

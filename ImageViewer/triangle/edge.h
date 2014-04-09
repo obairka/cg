@@ -14,6 +14,10 @@ public:
     TexturedPoint getA() const;
     TexturedPoint getB() const;
     double getK() const;
+
+    friend bool operator<(const Edge& a, const Edge& b)  {
+        return a.getA() < b.getA();
+    }
 };
 
 #endif // EDGE_H

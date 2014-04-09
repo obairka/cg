@@ -1,36 +1,65 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
+#include <QObject>
 #include <vector>
 #include <cmath>
 #include "canvas.h"
 #include "texturedpoint.h"
 #include "texture.h"
 
-class Triangle
+class Triangle : public QObject
 {
+    Q_OBJECT
 private:
-    Texture* texture;
+    Texture* texture;                   // get point color
     std::vector<TexturedPoint> points;
-    float currAngle;
-    float currScaleX;
-    float currScaleY;
+    double rotCenterX;
+    double rotCenterY;
+
+    double currAngle;
+    double currScaleX;
+    double currScaleY;
+
+    int maxY; // для клипирования
+    int maxX; // для клипирования
 
 public:
     Triangle(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c);
     void setTexture(Texture* texture);
     void draw(Canvas& canvas);
-    void rotate(float angle);
-
-    void scaleX(float q);
-    void scaleY(float q);
-
 /*
- *  Вспомогательные методы
+ * клипирование
  */
+    void setMaxX(int maxX);
+    void setMaxY(int maxY);
+signals:
+    void angleChanged();
+    void scaleChanged();
+    void centerChanged();
+public slots:
+    void rotate(double angle);
+
+    void setRotateCenter(double xc, double xy);
+    void scaleX(double q);
+    void scaleY(double q);
+
 private:
-    void formRotMatX(float* m, float angle);
-    void formRotMatY(float* m, float angle);
+    void formRotMat(double rotMat[2][2]);
+/*
+ *  матрица масштабирования
+ *  scaleX | 0
+ *  0      | scaleY
+ */
+    void formScaleMat(double rotScale[2][2]);
+/*
+ *  изменить точки в new_points
+ */
+    void applyScaling(std::vector<TexturedPoint>& new_points );
+/*
+ *  добавить измененные точки из points в new_points
+ */
+    void applyRotation(std::vector<TexturedPoint>& new_points, const std::vector<TexturedPoint>&points);
 
 /*
  *  Статические параметры
