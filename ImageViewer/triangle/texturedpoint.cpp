@@ -40,28 +40,41 @@ bool TexturedPoint::compX(const TexturedPoint &a, const TexturedPoint &b){
 }
 
 QColor TexturedPoint::transformToColor(double xt, double yt) {
-    int r = floor(xt == 1.0 ? 255 : fabs(xt) * 256.0);
-    int g = floor(yt == 1.0 ? 255 : fabs(yt) * 256.0);
-    if (r > 255 || r < 0  || g > 255 || g < 0 )
-    qDebug() << r << g << xt << yt;
+    int r = floor(xt >= 1.0 ? 255 : fabs(xt) * 256.0);
+    int g = floor(yt >= 1.0 ? 255 : fabs(yt) * 256.0);
 
    return QColor(r, g, 0);
 }
 
 void TexturedPoint::calcTextureCoordinates(const TexturedPoint& a, const TexturedPoint& b){
-    double k = 0;
-// TODO : scalar = sqrt(norm)
-    if (b.x() != a.x()) {
-        k = fabs((this->x() - a.x()) * 1.0 / (b.x() - a.x()));
-    }
-    if (a.y() != b.y() ) {
-        k = fabs((this->y() - a.y()) * 1.0/ (b.y() - a.y()));
-    }
 
-    if (k < 0 || k > 1){
-        qDebug() << k ;
+    double ab_norm = norm(b.x() - a.x(), b.y() - a.y());
+    double ab_tex_norm =  norm(b.getTexX() - a.getTexX(), b.getTexY() - a.getTexY());
+    if (0 == ab_norm){
+        // TODO:
+        texX = a.getTexX();
+        texY = a.getTexY();
+        return;
     }
-    texX = a.getTexX() + (b.getTexX() - a.getTexX())* k;
-    texY = a.getTexY() + (b.getTexY() - a.getTexY())* k;
+    double length = norm(x() - a.x(), y() - a.y());
+    double vector_length = length / ab_norm * ab_tex_norm;
+
+    texX = (b.getTexX() - a.getTexX())* vector_length / ab_tex_norm + a.getTexX();
+    texY = (b.getTexY() - a.getTexY())* vector_length / ab_tex_norm + a.getTexY();
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

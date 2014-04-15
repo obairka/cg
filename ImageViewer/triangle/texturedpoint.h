@@ -2,6 +2,7 @@
 #define TEXTUREDPOINT_H
 
 #include <QPointF>
+#include <cmath>
 #include <QColor>
 
 class TexturedPoint : public QPointF
@@ -26,6 +27,10 @@ public:
     static QColor transformToColor(double tx, double ty);
     static bool compX(const TexturedPoint& a, const TexturedPoint& b);
 private:
+    static double norm(double x, double y) {
+        return sqrt(pow(x, 2)+pow(y,2));
+    }
+
     static const double INVALID = -1;
 };
 

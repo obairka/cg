@@ -53,13 +53,6 @@ void Triangle::setMaxY(int maxY){
     this->maxY = maxY;
 }
 
-void Triangle::formRotMat(double rotMat[2][2]) {
-    double angle = currAngle;
-    rotMat[0][0] = cos(RAD_IN_GRAD*angle);
-    rotMat[0][1] = sin(RAD_IN_GRAD*angle);
-    rotMat[1][0] = -rotMat[0][1];
-    rotMat[1][1] = rotMat[0][0];
-}
 
 void Triangle::rotate(double angle) {
     currAngle = angle;
@@ -70,55 +63,37 @@ void Triangle::setTexture(Texture* texture) {
     this->texture = texture;
 }
 
-void Triangle::applyRotation(std::vector<TexturedPoint>& new_points, const std::vector<TexturedPoint>& old_points){
-    double rotMat[2][2];
-    formRotMat(rotMat);
-    for (int i = 0; i < (int)old_points.size(); ++i) {
-        double oldX = old_points[i].x();
-        double oldY = old_points[i].y();
+void Triangle::transform(std::vector<TexturedPoint> &new_points){
+    double tr_mat[3][2];
+    // TODO : radians теряет точность
+    double radians = currAngle * RAD_IN_GRAD;
+    double sinval = sin(radians);
+    double cosval = cos(radians);
+    tr_mat[0][0] = currScaleX * cosval;
+    tr_mat[0][1] = currScaleX * sinval;
+    tr_mat[1][0] = -currScaleY * sinval;
+    tr_mat[1][1] = currScaleY * cosval;
+    tr_mat[2][0] = rotCenterX*(1-currScaleX*cosval) + currScaleY * rotCenterY*sinval;
+    tr_mat[2][1] = rotCenterY*(1-currScaleY*cosval) - currScaleX * rotCenterX*sinval;
 
-        double newX = (oldX-rotCenterX) * rotMat[0][0] + (oldY-rotCenterY) * rotMat[0][1] + rotCenterX;
-        double newY =  (oldX-rotCenterX) * rotMat[1][0] + (oldY-rotCenterY) * rotMat[1][1] + rotCenterY;
-        TexturedPoint new_point = old_points[i];
-        qDebug() << oldX << oldY << "->" << newX << newY;
-        new_point.setX(newX);
-        new_point.setY(newY);
+    for (int i = 0; i < (int) points.size(); ++i) {
+        // [x, y, 1] * tr_mat = new point
+
+        double x0 = points[i].x();
+        double y0 = points[i].y();
+
+        double x = tr_mat[0][0]*x0+ tr_mat[1][0]*y0+tr_mat[2][0];
+        double y = tr_mat[0][1]*x0+ tr_mat[1][1]*y0+tr_mat[2][1];
+
+        TexturedPoint new_point(x,y, points[i].getTexX(), points[i].getTexY());
         new_points.push_back(new_point);
     }
 }
 
-void Triangle::formScaleMat(double rotScale[2][2]){
-    rotScale[0][0] = currScaleX;
-    rotScale[0][1] = 0;
-    rotScale[1][0] = 0;
-    rotScale[1][1] = currScaleY;
-}
-
-void Triangle::applyScaling(std::vector<TexturedPoint> &new_points){
-    double scaleMat[2][2];
-    formScaleMat(scaleMat);
-    for (int i = 0; i < (int)new_points.size(); ++i) {
-        double oldX = new_points[i].x();
-        double oldY = new_points[i].y();
-        double newX = (oldX-rotCenterX) * scaleMat[0][0] +  (oldY-rotCenterY) * scaleMat[0][1]  +rotCenterX;
-        double newY = (oldX-rotCenterX)  * scaleMat[1][0] + (oldY-rotCenterY)  * scaleMat[1][1] +rotCenterY;
-
-
-        new_points[i].setX(newX);
-        new_points[i].setY(newY);
-
-    }
-}
-
-
 void Triangle::draw(Canvas& canvas) {
 
     std::vector<TexturedPoint> points;
-    applyRotation(points, this->points);
-    applyScaling(points);
-     for (int i = 0; i < (int)points.size(); ++i) {
-         qDebug() << points[i].x() << points[i].y();
-     }
+    transform(points);
     std::sort(points.begin(), points.end());
 
     std::vector<Edge> edges;
@@ -130,7 +105,6 @@ void Triangle::draw(Canvas& canvas) {
     int i = 0;
 
     while (curY <= maxY){
-
         int nextY = maxY;
 
         while ( i != (int)points.size() && trunc(points[i].y()) <= curY){
@@ -153,19 +127,6 @@ void Triangle::draw(Canvas& canvas) {
             ++i;
         }
 
-        if (edges.empty()) {
-           if(i != (int)points.size()) {
-               curY = points[i].y();
-
-               nextY = maxY;
-               continue;
-           }
-           break;
-        }
-        if (i != (int)points.size() && nextY > points[i].y()) {
-            nextY = points[i].y();
-        }
-
         while(curY <= nextY && curY <= maxY) {
 
             std::vector<TexturedPoint> borderX;
@@ -181,16 +142,14 @@ void Triangle::draw(Canvas& canvas) {
             int begin = borderX.front().x() >0 ? borderX.front().x() : 0;
 
             for (int x = begin; x < borderX.back().x() && x < maxX; ++x) {
-
                 TexturedPoint curPoint(x, curY);
                 curPoint.calcTextureCoordinates(borderX.front(),borderX.back());
-
                 canvas.drawPixel(x, curY, TexturedPoint::transformToColor(curPoint.getTexX(), curPoint.getTexY()));
             }
 
             ++curY;
         }
-        //if (curY >= maxY) break;
+
         std::vector<Edge>::iterator iter = edges.begin();
         for(; iter != edges.end(); ) {
            if ( (*iter).getB().y() < curY) {

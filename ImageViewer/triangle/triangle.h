@@ -45,25 +45,10 @@ public slots:
     void scaleY(double q);
 
 private:
-    void formRotMat(double rotMat[2][2]);
-/*
- *  матрица масштабирования
- *  scaleX | 0
- *  0      | scaleY
- */
-    void formScaleMat(double rotScale[2][2]);
-/*
- *  изменить точки в new_points
- */
-    void applyScaling(std::vector<TexturedPoint>& new_points );
-/*
- *  добавить измененные точки из points в new_points
- */
-    void applyRotation(std::vector<TexturedPoint>& new_points, const std::vector<TexturedPoint>&points);
 
-/*
- *  Статические параметры
- */
+    void transform(std::vector<TexturedPoint>& new_points);
+
+
 public:
     static const double RAD_IN_GRAD;
     static const double MIN_SCALE_X;
