@@ -42,17 +42,24 @@ bool TexturedPoint::compX(const TexturedPoint &a, const TexturedPoint &b){
 QColor TexturedPoint::transformToColor(double xt, double yt) {
     int r = floor(xt == 1.0 ? 255 : fabs(xt) * 256.0);
     int g = floor(yt == 1.0 ? 255 : fabs(yt) * 256.0);
+    if (r > 255 || r < 0  || g > 255 || g < 0 )
+    qDebug() << r << g << xt << yt;
 
    return QColor(r, g, 0);
 }
 
 void TexturedPoint::calcTextureCoordinates(const TexturedPoint& a, const TexturedPoint& b){
     double k = 0;
+// TODO : scalar = sqrt(norm)
     if (b.x() != a.x()) {
-        k = (this->x() - a.x()) * 1.0 / (b.x() - a.x());
+        k = fabs((this->x() - a.x()) * 1.0 / (b.x() - a.x()));
     }
     if (a.y() != b.y() ) {
-        k = (this->y() - a.y()) * 1.0/ (b.y() - a.y());
+        k = fabs((this->y() - a.y()) * 1.0/ (b.y() - a.y()));
+    }
+
+    if (k < 0 || k > 1){
+        qDebug() << k ;
     }
     texX = a.getTexX() + (b.getTexX() - a.getTexX())* k;
     texY = a.getTexY() + (b.getTexY() - a.getTexY())* k;

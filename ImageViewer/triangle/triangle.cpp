@@ -77,9 +77,10 @@ void Triangle::applyRotation(std::vector<TexturedPoint>& new_points, const std::
         double oldX = old_points[i].x();
         double oldY = old_points[i].y();
 
-        double newX = (oldX-rotCenterX) * rotMat[0][0] + (oldY-rotCenterX) * rotMat[0][1] + rotCenterX;
+        double newX = (oldX-rotCenterX) * rotMat[0][0] + (oldY-rotCenterY) * rotMat[0][1] + rotCenterX;
         double newY =  (oldX-rotCenterX) * rotMat[1][0] + (oldY-rotCenterY) * rotMat[1][1] + rotCenterY;
         TexturedPoint new_point = old_points[i];
+        qDebug() << oldX << oldY << "->" << newX << newY;
         new_point.setX(newX);
         new_point.setY(newY);
         new_points.push_back(new_point);
@@ -115,7 +116,9 @@ void Triangle::draw(Canvas& canvas) {
     std::vector<TexturedPoint> points;
     applyRotation(points, this->points);
     applyScaling(points);
-
+     for (int i = 0; i < (int)points.size(); ++i) {
+         qDebug() << points[i].x() << points[i].y();
+     }
     std::sort(points.begin(), points.end());
 
     std::vector<Edge> edges;
@@ -126,9 +129,9 @@ void Triangle::draw(Canvas& canvas) {
     int curY = minY;
     int i = 0;
 
-    while (curY < maxY){
+    while (curY <= maxY){
 
-        int nextY = maxY-1;
+        int nextY = maxY;
 
         while ( i != (int)points.size() && trunc(points[i].y()) <= curY){
             TexturedPoint a = points[i];
@@ -154,7 +157,7 @@ void Triangle::draw(Canvas& canvas) {
            if(i != (int)points.size()) {
                curY = points[i].y();
 
-               nextY = maxY-1;
+               nextY = maxY;
                continue;
            }
            break;
@@ -177,7 +180,7 @@ void Triangle::draw(Canvas& canvas) {
             std::sort(borderX.begin(), borderX.end(), TexturedPoint::compX);
             int begin = borderX.front().x() >0 ? borderX.front().x() : 0;
 
-            for (int x = begin; x < borderX.back().x() && x <= maxX; ++x) {
+            for (int x = begin; x < borderX.back().x() && x < maxX; ++x) {
 
                 TexturedPoint curPoint(x, curY);
                 curPoint.calcTextureCoordinates(borderX.front(),borderX.back());
@@ -187,7 +190,7 @@ void Triangle::draw(Canvas& canvas) {
 
             ++curY;
         }
-        if (curY >= maxY-1) break;
+        //if (curY >= maxY) break;
         std::vector<Edge>::iterator iter = edges.begin();
         for(; iter != edges.end(); ) {
            if ( (*iter).getB().y() < curY) {

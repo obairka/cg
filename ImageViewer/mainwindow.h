@@ -2,16 +2,22 @@
 #define MAINWINDOW_H
 
 #include "drawpanel.h"
-
+#include "sizecontroller.h"
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
 #include <QFileDialog>
+#include <QGroupBox>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
     DrawPanel drawPanel;
+    SizeController rotateContr;
+    SizeController scaleXContr;
+    SizeController scaleYContr;
+    QGroupBox controllersBox;
+    QGroupBox drawPanelBox;
 
 public:
     MainWindow(int w, int h, QWidget *parent = 0);
