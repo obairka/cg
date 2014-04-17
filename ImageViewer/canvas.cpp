@@ -84,7 +84,3 @@ void Canvas::setSize(int w, int h){
 void Canvas::clear(){
     image.fill(Qt::white);
 }
-
-void Canvas::setmem(int y, int leftx, int rightx, int value){
-    memset(&image.bits()[y * image.bytesPerLine() + leftx * 3 ], value, 3*(rightx-leftx+1));
-}

@@ -47,6 +47,12 @@ void Square::setSize(int size) {
     setCenter(xc,yc);
 }
 
+void Square::setDefault(){
+    rotate(0);
+    scaleX(Triangle::DEFAULT_SCALE_X);
+    scaleY(Triangle::DEFAULT_SCALE_Y);
+}
+
 void Square::rotate(double angle) {
     leftDownTriangle.rotate(angle);
     rightUpTriangle.rotate(angle);

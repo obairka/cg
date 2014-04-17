@@ -21,14 +21,13 @@ private:
 public:
     // Задается стороной и центром
     Square(int size, double xc, double yc);
-
+    void setDefault();
     void setMax(int maxX, int maxY);
 
 signals:
     void angleChanged(double);
     void scaleXChanged(double);
     void scaleYChanged(double);
-
     void centerChanged(double);
 public slots:
     void draw(Canvas& canvas, Texture* texture=0);

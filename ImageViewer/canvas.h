@@ -29,7 +29,6 @@ public:
     void clear();
     int getWidth();
     int getHeight();
-    void setmem(int y, int leftx, int rightx, int value);
 };
 
 #endif // CANVAS_H

@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     triangle/edge.cpp \
     triangle/texturedpoint.cpp \
     drawpanel.cpp \
-    square.cpp
+    square.cpp \
+    sizecontroller.cpp \
+    doubleslider.cpp \
+
 
 HEADERS  += mainwindow.h \
     triangle/triangle.h \
@@ -29,4 +32,7 @@ HEADERS  += mainwindow.h \
     triangle/texture.h \
     canvas.h \
     drawpanel.h\
-    square.h
+    square.h \
+    sizecontroller.h \
+    doubleslider.h \
+    triangle/filter.h
