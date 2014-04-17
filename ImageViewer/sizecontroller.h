@@ -6,25 +6,27 @@
 #include <QLabel>
 #include <QLayout>
 #include <QSpinBox>
-#include <QSlider>
+#include "doubleslider.h"
 
 class SizeController : public QWidget
 {
     Q_OBJECT
     QGridLayout layout;
     QLabel label;
-    QSpinBox spinEditor;
-    QSlider slider;
-    int min;
-    int max;
-    int value;
+    QDoubleSpinBox spinEditor;
+
+
+    double min;
+    double max;
+    double value;
+    DoubleSlider slider;
 public:
-    SizeController(QWidget*,const std::string& label, int min, int max, int val);
-    int getValue() const;
+    SizeController(QWidget*,const std::string& label, double min, double max, double val);
+    double getValue() const;
 protected slots:
-    void setValue(int v);
+    void setValue(double v);
 signals:
-    void valueChanged(int newValue);
+    void valueChanged(double newValue);
 
 };
 

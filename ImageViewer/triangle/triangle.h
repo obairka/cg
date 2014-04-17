@@ -12,7 +12,7 @@ class Triangle : public QObject
 {
     Q_OBJECT
 private:
-    Texture* texture;                   // get point color
+                // get point color
     std::vector<TexturedPoint> points;
     double rotCenterX;
     double rotCenterY;
@@ -25,18 +25,18 @@ private:
     int maxX; // для клипирования
 
 public:
-    Triangle(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c);
-    void setTexture(Texture* texture);
-    void draw(Canvas& canvas);
+    Triangle();
+    void changePoints(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c);
+    void draw(Canvas& canvas, Texture*);
 /*
  * клипирование
  */
     void setMaxX(int maxX);
     void setMaxY(int maxY);
 signals:
-    void angleChanged();
-    void scaleChanged();
-    void centerChanged();
+    void angleChanged(double);
+    void scaleChanged(double);
+    void centerChanged(double);
 public slots:
     void rotate(double angle);
 

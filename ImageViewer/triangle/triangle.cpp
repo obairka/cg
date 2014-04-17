@@ -12,36 +12,49 @@ const double Triangle::MAX_ANGLE = 360.0;
 const double Triangle::DEFAULT_SCALE_X = 1.0;
 const double Triangle::DEFAULT_SCALE_Y = 1.0;
 
-Triangle::Triangle(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c)
+Triangle::Triangle()
 {
+}
+
+
+void Triangle::changePoints(const TexturedPoint& a, const TexturedPoint& b, const TexturedPoint& c){
+
+    points.clear();
     points.push_back(a);
     points.push_back(b);
     points.push_back(c);
-    texture = 0;
+
+
     currAngle = 0;
     currScaleX = DEFAULT_SCALE_X;
     currScaleY = DEFAULT_SCALE_Y;
-
     rotCenterX = (a.x() + b.x() + c.x())/3.;
     rotCenterY = (a.y() + b.y() + c.y())/3.;
-    maxX = c.x();
-    maxY = c.y();
 }
 
 void Triangle::setRotateCenter(double xc, double yc){
     rotCenterX = xc;
     rotCenterY = yc;
-    emit centerChanged();
+//TODO:
 }
 
 void Triangle::scaleX(double q){
     currScaleX = q;
-    emit scaleChanged();
+    //emit scaleChanged(currScaleX);
 }
 
 void Triangle::scaleY(double q){
     currScaleY = q;
-    emit scaleChanged();
+    //emit scaleChanged(currScaleY);
+
+}
+
+
+void Triangle::rotate(double angle) {
+    currAngle = angle;
+
+
+    //emit angleChanged(currAngle);
 }
 
 
@@ -51,16 +64,6 @@ void Triangle::setMaxX(int maxX){
 
 void Triangle::setMaxY(int maxY){
     this->maxY = maxY;
-}
-
-
-void Triangle::rotate(double angle) {
-    currAngle = angle;
-    emit angleChanged();
-}
-
-void Triangle::setTexture(Texture* texture) {
-    this->texture = texture;
 }
 
 void Triangle::transform(std::vector<TexturedPoint> &new_points){
@@ -90,7 +93,7 @@ void Triangle::transform(std::vector<TexturedPoint> &new_points){
     }
 }
 
-void Triangle::draw(Canvas& canvas) {
+void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
 
     std::vector<TexturedPoint> points;
     transform(points);
@@ -144,7 +147,11 @@ void Triangle::draw(Canvas& canvas) {
             for (int x = begin; x < borderX.back().x() && x < maxX; ++x) {
                 TexturedPoint curPoint(x, curY);
                 curPoint.calcTextureCoordinates(borderX.front(),borderX.back());
-                canvas.drawPixel(x, curY, TexturedPoint::transformToColor(curPoint.getTexX(), curPoint.getTexY()));
+                if (0 == texture)
+                    canvas.drawPixel(x, curY, TexturedPoint::transformToColor(curPoint.getTexX(), curPoint.getTexY()));
+                else {
+                    canvas.drawPixel(x, curY, texture->getColor(curPoint));
+                }
             }
 
             ++curY;

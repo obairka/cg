@@ -9,12 +9,14 @@ class Texture
 {
     QImage image;
     bool loaded;
+    int max_size;
 public:
-    Texture();
+    Texture(int max_size);
     // open image
     void load(const std::string& image_src);
     QColor getColor(const TexturedPoint& point);
     bool isLoaded() const;
+    int getSize() const;
 };
 
 #endif // TEXTURE_H

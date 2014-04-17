@@ -1,27 +1,29 @@
 #include <QGridLayout>
 #include "sizecontroller.h"
 
-SizeController::SizeController(QWidget* p, const std::string& string, int min, int max, int val)
-    : QWidget(p, Qt::Window), layout(this), min(min), max(max)
+SizeController::SizeController(QWidget* p, const std::string& string, double min, double max, double val)
+    : QWidget(p, Qt::Window), layout(this),  min(min), max(max), slider(min, max)
 {
     label.setText(QString(string.c_str()));
     label.setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
+    spinEditor.setFixedSize(80, 30);
     spinEditor.setRange(min, max);
     spinEditor.setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
-
+    spinEditor.setSingleStep(0.1);
     slider.setOrientation(Qt::Horizontal);
-    slider.setRange(min, max);
+
+    slider.setFixedSize(200, 20);
     slider.setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
-    QObject::connect(&slider, SIGNAL(valueChanged(int)), &spinEditor, SLOT(setValue(int)));
-    QObject::connect(&spinEditor, SIGNAL(valueChanged(int)), &slider, SLOT(setValue(int)));
-    QObject::connect(&spinEditor, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
+    QObject::connect(&slider, SIGNAL(doubleValueChanged(double)), &spinEditor, SLOT(setValue(double)));
+    QObject::connect(&spinEditor, SIGNAL(valueChanged(double)), &slider, SLOT(setDoubleValue(double)));
+    QObject::connect(&spinEditor, SIGNAL(valueChanged(double)), this, SLOT(setValue(double)));
 
     if (val > max) val = max;
     if (val < min) val = min;
 
-    slider.setValue(val);
+    slider.setValue(val * 10);
 
     layout.addWidget(&label, 0,0, Qt::AlignLeft);
     layout.addWidget(&spinEditor, 0,1, Qt::AlignRight);
@@ -29,20 +31,20 @@ SizeController::SizeController(QWidget* p, const std::string& string, int min, i
     layout.setMargin(20);
     this->setLayout(&layout);
 
-
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-int SizeController::getValue() const
+double SizeController::getValue() const
 {
     return slider.value();
 }
 
-void SizeController::setValue(int v)
+void SizeController::setValue(double v)
 {
     if (v!=value) {
         value = v;
-        slider.setValue(value);
+        spinEditor.setValue(value);
         emit valueChanged(value);
     }
 }
+

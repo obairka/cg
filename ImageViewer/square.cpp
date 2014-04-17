@@ -3,26 +3,19 @@
 #include <QDebug>
 
 Square::Square(int size, double xc, double yc)
-    :
-        // leftX = xc - size*1.0/2  leftY =yc - size*1.0/2
-        // rightX = xc + size*1.0/2 rightY = yc + size*1.0/2
-      leftX(xc-size*1.0/2), rightX(xc+size*1.0/2),
-      downY(yc-size*1.0/2), upY(yc+size*1.0/2),
-      leftDownTriangle(TexturedPoint(leftX, downY, 0, 0), TexturedPoint(leftX, upY, 0, 1),
-                      TexturedPoint(rightX, upY, 1, 1)),
-      rightUpTriangle(TexturedPoint(leftX, downY, 0, 0), TexturedPoint(rightX, downY, 1, 0),
-                      TexturedPoint(rightX, upY, 1, 1))
-
 
 {
+
     setCenter(xc,yc);
     setSize(size);
     setMax(rightX, upY);
 }
 
-void Square::draw(Canvas &canvas){
-    rightUpTriangle.draw(canvas);
-    leftDownTriangle.draw(canvas);
+void Square::draw(Canvas &canvas, Texture* texture){
+
+    canvas.clear();
+    rightUpTriangle.draw(canvas, texture);
+    leftDownTriangle.draw(canvas, texture);
 }
 
 void Square::setCenter(double xc, double yc){
@@ -37,6 +30,7 @@ void Square::setMax(int maxX, int maxY){
     rightUpTriangle.setMaxY(maxY);
     leftDownTriangle.setMaxX(maxX);
     leftDownTriangle.setMaxY(maxY);
+    qDebug() << "max";
 }
 
 void Square::setSize(int size) {
@@ -45,22 +39,28 @@ void Square::setSize(int size) {
     rightX = xc+size*1.0/2;
     downY = yc-size*1.0/2;
     upY = yc+size*1.0/2;
+
+    leftDownTriangle.changePoints(TexturedPoint(leftX, downY, 0, 0), TexturedPoint(leftX, upY, 0, 1),
+                    TexturedPoint(rightX, upY, 1, 1));
+    rightUpTriangle.changePoints(TexturedPoint(leftX, downY, 0, 0), TexturedPoint(rightX, downY, 1, 0),
+                    TexturedPoint(rightX, upY, 1, 1));
+    setCenter(xc,yc);
 }
 
 void Square::rotate(double angle) {
     leftDownTriangle.rotate(angle);
     rightUpTriangle.rotate(angle);
-    emit angleChanged();
+    emit angleChanged(angle);
 }
 
 void Square::scaleX(double scaleX) {
     leftDownTriangle.scaleX(scaleX);
     rightUpTriangle.scaleX(scaleX);
-    emit scaleChanged();
+    emit scaleXChanged(scaleX);
 }
 
 void Square::scaleY(double scaleY) {
     leftDownTriangle.scaleY(scaleY);
     rightUpTriangle.scaleY(scaleY);
-    emit scaleChanged();
+    emit scaleYChanged(scaleY);
 }
