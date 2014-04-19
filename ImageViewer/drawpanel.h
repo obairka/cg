@@ -16,6 +16,9 @@ public:
     const Square& getSquare() const {
         return square;
     }
+    const Texture& getTexture() const{
+        return texture;
+    }
 
     void open(const std::string& filename);
 protected:

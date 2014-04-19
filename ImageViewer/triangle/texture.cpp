@@ -4,21 +4,36 @@
 #include <QDebug>
 #include "texture.h"
 
-Filter Texture::simpleFilter(0);
+Filter Texture::simpleFilter;
+Bilinear Texture::bilinearFilter;
 
 Texture::Texture(int max_size) : filter(0), loaded (false), max_size(max_size)
 {
-    filter = &simpleFilter;
+    filter = &bilinearFilter;
+
 }
 
-void Texture::setFilter(int filterType)
+QColor Texture::getColor(const QPoint& point){
+    if (isLoaded()) {
+
+        return image.pixel(point);
+    }
+    //TODO:
+    return Qt::black;
+}
+
+void Texture::setFilter(const int filterType)
 {
     if (filter->getType() == filterType) return;
 
     if (filterType == simpleFilter.getType()) {
         filter = &simpleFilter;
     }
-    filter->setSize(getSize());
+    else if (filterType == bilinearFilter.getType()) {
+        filter = &bilinearFilter;
+    } else {
+        // TODO
+    }
 }
 
 void Texture::load(const std::string &image_src) {
@@ -29,7 +44,7 @@ void Texture::load(const std::string &image_src) {
     int height = pixmap.height();
     int size = width < height ? width : height;
     if (size > max_size) size = max_size;
-    filter->setSize(size);
+
     QImage raw_image = pixmap.toImage();
     image = raw_image.copy(0, 0, size, size);
 
@@ -49,5 +64,5 @@ QColor Texture::getColor(const TexturedPoint &point) {
         return Qt::black; // TODO:
     }
     // TODO : ADD Filtration
-    return QColor(image.pixel(filter->filter(point)));
+    return filter->filter(this,point);
 }

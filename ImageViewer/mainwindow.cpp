@@ -2,6 +2,9 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QRadioButton>
+#include<QGroupBox>
+#include <QButtonGroup>
 #include "mainwindow.h"
 #include "square.h"
 
@@ -33,7 +36,26 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     drawPanelBox->setMinimumSize(w,h);
     panelLayout->setSizeConstraint(QLayout::SetFixedSize);
     drawPanelBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
     QVBoxLayout* cLayout = new QVBoxLayout();
+    QButtonGroup* filterGroup = new QButtonGroup();
+    QRadioButton* noFilter = new QRadioButton(tr("No filter"),this);
+    QRadioButton* bilinearFilter = new QRadioButton(tr("Bilinear filter"),this);
+    QRadioButton* mipMapFilter = new QRadioButton(tr("Mip mapping"), this);
+    filterGroup->addButton(noFilter, 0);
+    filterGroup->addButton(bilinearFilter, 1);
+    filterGroup->addButton(mipMapFilter, 2);
+    connect(filterGroup, SIGNAL(buttonClicked(int)), &drawPanel->getTexture(), SLOT(setFilter(int)));
+    connect(filterGroup, SIGNAL(buttonClicked(int)), drawPanel, SLOT(repaint_square()));
+
+    QGroupBox* filterBox = new QGroupBox(tr("Choose fitler type:"),this);
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(noFilter);
+    vbox->addWidget(bilinearFilter);
+    vbox->addWidget(mipMapFilter);
+    filterBox->setLayout(vbox);
+    noFilter->setChecked(true);
+    cLayout->addWidget(filterBox);
     cLayout->addWidget(rotateContr);
     cLayout->addWidget(scaleXContr);
     cLayout->addWidget(scaleYContr);
@@ -42,6 +64,8 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     controllersBox->setMinimumSize(250, h);
     controllersBox->setFixedSize(250, h);
     controllersBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+
     QWidget * center = new QWidget(this);
     QHBoxLayout* hlayout = new QHBoxLayout();
     hlayout->addWidget(drawPanelBox);
@@ -51,6 +75,8 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     center->setFixedSize(w+300, h);
     center->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     center->setLayout(hlayout);
+
+
 
     QMenuBar *menuBar = new QMenuBar(this);
     QMenu* menu = new QMenu(tr("File"), menuBar);

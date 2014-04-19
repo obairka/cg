@@ -26,9 +26,7 @@ void DrawPanel::paintEvent(QPaintEvent *event)
 
 void DrawPanel::open(const std::string& filename){
     texture.load(filename);
- //TODO: square.deafult();
     square.setSize(texture.getSize());
-
     square.setDefault();
     repaint_square();
 }
