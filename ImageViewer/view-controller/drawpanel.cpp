@@ -1,14 +1,14 @@
+#include "drawpanel.h"
 #include <QPainter>
 #include <QDebug>
-#include <QMouseEvent>
-#include "drawpanel.h"
+
 
 DrawPanel::DrawPanel(int w, int h,   QWidget *parent) :
     QWidget(parent),Canvas(w,h),square(w,w/2,h/2), texture(w)
 {
     setFixedSize(w, h);
     texture.load("homer.png");
-    square.setSize(texture.getSize());
+    square.setSize(texture.get_size());
     square.setMax(w,h);
 
     QObject::connect(&square, SIGNAL(angleChanged(double)), this, SLOT(repaint_square()));
@@ -26,7 +26,7 @@ void DrawPanel::paintEvent(QPaintEvent *event)
 
 void DrawPanel::open(const std::string& filename){
     texture.load(filename);
-    square.setSize(texture.getSize());
+    square.setSize(texture.get_size());
     square.setDefault();
     repaint_square();
 }

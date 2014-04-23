@@ -1,6 +1,7 @@
 #include <QDebug>
 #include "triangle.h"
 #include "edge.h"
+#include <cmath>
 
 const double Triangle::RAD_IN_GRAD = M_PI / 180.0;
 const double Triangle::MIN_SCALE_X = 0.0;
@@ -88,12 +89,12 @@ void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
     std::vector<Edge> edges;
 
     int minY = (points.front().y() < 0) ? 0: points.front().y();
-    int maxY = (points.back().y() < this->maxY) ? points.back().y() : this->maxY;
+    int maxY = (points.back().y() < this->maxY) ? points.back().y() : this->maxY - 1;
 
     int curY = minY;
     int i = 0;
 
-    while (curY <= maxY) {
+    while (curY < maxY) {
         int nextY = maxY;
 
         while ( i != (int)points.size() && trunc( points[i].y()) <= curY ){
@@ -132,11 +133,16 @@ void Triangle::draw(Canvas& canvas, Texture* texture = 0) {
 
             for (int x = begin; x < borderX.back().x() && x < maxX; ++x) {
                 TexturedPoint curPoint(x, curY);
+
                 curPoint.calcTextureCoordinates(borderX.front(),borderX.back());
-                if (0 == texture)
+
+                if (0 == texture) {
+
                     canvas.drawPixel(x, curY, TexturedPoint::transformToColor(curPoint.getTexX(), curPoint.getTexY()));
+                }
                 else {
-                    canvas.drawPixel(x, curY, texture->getColor(curPoint));
+
+                    canvas.drawPixel(x, curY, texture->get_color(curPoint));
                 }
             }
 

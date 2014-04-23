@@ -1,13 +1,17 @@
+#include "mainwindow.h"
+#include "texture/square.h"
+
+#include "sizecontroller.h"
 #include <QObject>
+#include <QMenuBar>
+#include <QMenu>
+#include <QFileDialog>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QRadioButton>
-#include<QGroupBox>
+#include <QGroupBox>
 #include <QButtonGroup>
-#include "mainwindow.h"
-#include "square.h"
-
 
 
 MainWindow::MainWindow(int w, int h, QWidget *parent)
@@ -90,6 +94,8 @@ MainWindow::MainWindow(int w, int h, QWidget *parent)
     this->setMenuBar(menuBar);
 
     setCentralWidget(center);
+
+
 }
 
 

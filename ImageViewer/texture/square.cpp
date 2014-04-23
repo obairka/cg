@@ -1,4 +1,4 @@
-#include "triangle/texturedpoint.h"
+#include "texturedpoint.h"
 #include "square.h"
 #include <QDebug>
 

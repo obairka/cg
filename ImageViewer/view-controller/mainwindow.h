@@ -2,12 +2,8 @@
 #define MAINWINDOW_H
 
 #include "drawpanel.h"
-#include "sizecontroller.h"
 #include <QMainWindow>
-#include <QMenuBar>
-#include <QMenu>
-#include <QFileDialog>
-#include <QGroupBox>
+
 
 class MainWindow : public QMainWindow
 {

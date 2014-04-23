@@ -1,12 +1,13 @@
 #ifndef SIZECONTROLLER_H
 #define SIZECONTROLLER_H
 
+#include "doubleslider.h"
 #include <QSizePolicy>
 #include <QWidget>
 #include <QLabel>
 #include <QLayout>
 #include <QSpinBox>
-#include "doubleslider.h"
+
 
 class SizeController : public QWidget
 {

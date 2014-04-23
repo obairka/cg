@@ -46,8 +46,15 @@ QColor TexturedPoint::transformToColor(double xt, double yt) {
    return QColor(r, g, 0);
 }
 
-void TexturedPoint::calcTextureCoordinates(const TexturedPoint& a, const TexturedPoint& b){
+double TexturedPoint::get_tex_in_pixX()const{
+    return tex_in_pixX;
+}
 
+double TexturedPoint::get_tex_in_pixY()const{
+    return tex_in_pixY;
+}
+
+void TexturedPoint::set_textured_coord(const TexturedPoint &a, const TexturedPoint &b){
     double ab_norm = norm(b.x() - a.x(), b.y() - a.y());
     double ab_tex_norm =  norm(b.getTexX() - a.getTexX(), b.getTexY() - a.getTexY());
     if (0 == ab_norm){
@@ -61,20 +68,17 @@ void TexturedPoint::calcTextureCoordinates(const TexturedPoint& a, const Texture
 
     texX = (b.getTexX() - a.getTexX())* vector_length / ab_tex_norm + a.getTexX();
     texY = (b.getTexY() - a.getTexY())* vector_length / ab_tex_norm + a.getTexY();
-
 }
 
+void TexturedPoint::calcTextureCoordinates(const TexturedPoint& a, const TexturedPoint& b){
+    TexturedPoint neighbour(x()+1, y());
+    set_textured_coord(a, b);
+    neighbour.set_textured_coord(a,b);
+
+    tex_in_pixX =  (neighbour.texX - texX);
+    tex_in_pixY =  (neighbour.texY - texY);
 
 
-
-
-
-
-
-
-
-
-
-
+}
 
 

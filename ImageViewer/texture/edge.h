@@ -11,8 +11,10 @@ private:
     double k;
 public:
     Edge(const TexturedPoint& a, const TexturedPoint& b);
+
     TexturedPoint getA() const;
     TexturedPoint getB() const;
+
     double getK() const;
 
     friend bool operator<(const Edge& a, const Edge& b)  {

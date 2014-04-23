@@ -1,14 +1,15 @@
 #ifndef FILTER_H
 #define FILTER_H
 
-#include <QPoint>
-#include "texturedpoint.h"
+#include "texture/texturedpoint.h"
+#include <QColor>
+
 class Texture;
+
 class Filter
 {
 protected:
     int type;
-
 public:
     Filter();
 

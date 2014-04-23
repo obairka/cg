@@ -4,7 +4,7 @@
 #include <QObject>
 #include <vector>
 #include <cmath>
-#include "canvas.h"
+#include "canvas/canvas.h"
 #include "texturedpoint.h"
 #include "texture.h"
 

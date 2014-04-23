@@ -1,14 +1,28 @@
-#include "bilinear.h"
-#include "texture.h"
-#include <cmath>
+#include "mipmapper.h"
+#include "texture/texture.h"
 #include <QDebug>
-Bilinear::Bilinear(){
-    this->type = 1;
+
+Mipmapper::Mipmapper()
+{
+    this->type = 2;
 }
 
+QColor Mipmapper::filter(Texture *texture, const TexturedPoint &point ){
 
-QColor Bilinear::filter(Texture* texture, const TexturedPoint& point){
-    int size = texture->getSize();
+
+    double dsdp = point.get_tex_in_pixX()/texture->get_texel_size();
+    double dtdp = point.get_tex_in_pixY()/texture->get_texel_size();
+
+    int level = fabs(sqrt(pow(dsdp,2)+pow(dtdp,2)) );
+    if (level >= texture->get_LODs_count()) {
+        level = texture->get_LODs_count()-1;
+    }
+
+    return bilinear(texture, point, level);
+}
+
+QColor Mipmapper::bilinear(Texture* texture, const TexturedPoint& point, int level){
+    int size = texture->get_LOD(level).width();
     if (!texture)
         return QColor();
     double fx = point.getTexX() * size;
@@ -28,12 +42,13 @@ QColor Bilinear::filter(Texture* texture, const TexturedPoint& point){
     fx = 1. - x_opp;
     fy = 1. - y_opp;
 
+    const QImage& LOD = texture->get_LOD(level);
     if (ix != size -1 && iy != size -1 ){
 
-        QColor p1 = texture->getColor(QPoint(ix, iy));
-        QColor p2 = texture->getColor(QPoint(ix+1, iy));
-        QColor p3 = texture->getColor(QPoint(ix, iy+1));
-        QColor p4 = texture->getColor(QPoint(ix+1, iy+1));
+        QColor p1 = LOD.pixel(ix  , iy);
+        QColor p2 = LOD.pixel(ix+1, iy);
+        QColor p3 = LOD.pixel(ix  , iy+1);
+        QColor p4 = LOD.pixel(ix+1, iy+1);
 
         QColor a, b, c;
 
@@ -52,5 +67,5 @@ QColor Bilinear::filter(Texture* texture, const TexturedPoint& point){
         return c;
     }
 
-    return texture->getColor(QPoint(ix,iy));
+    return LOD.pixel(ix, iy);
 }

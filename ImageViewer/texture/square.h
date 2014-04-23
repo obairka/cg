@@ -1,9 +1,8 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 
-#include "triangle/triangle.h"
-#include "canvas.h"
-
+#include "canvas/canvas.h"
+#include "triangle.h"
 
 class Square : public QObject
 {

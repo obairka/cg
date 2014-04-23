@@ -13,26 +13,30 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    triangle/triangle.cpp \
-    canvas.cpp \
-    triangle/texture.cpp \
-    triangle/edge.cpp \
-    triangle/texturedpoint.cpp \
-    drawpanel.cpp \
-    square.cpp \
-    sizecontroller.cpp \
-    doubleslider.cpp \
+    canvas/canvas.cpp \
+    view-controller/mainwindow.cpp \
+    view-controller/sizecontroller.cpp \
+    view-controller/doubleslider.cpp \
+    view-controller/drawpanel.cpp \
+    texture/square.cpp \
+    texture/filter/bilinear.cpp \
+    texture/filter/filter.cpp \
+    texture/filter/mipmapper.cpp\
+    texture/triangle.cpp\
+    texture/texture.cpp\
+    texture/edge.cpp\
+    texture/texturedpoint.cpp\
 
-
-HEADERS  += mainwindow.h \
-    triangle/triangle.h \
-    triangle/edge.h \
-    triangle/texturedpoint.h \
-    triangle/texture.h \
-    canvas.h \
-    drawpanel.h\
-    square.h \
-    sizecontroller.h \
-    doubleslider.h \
-    triangle/filter.h
+HEADERS  += view-controller/mainwindow.h\
+        texture/triangle.h\
+        texture/edge.h\
+        texture/texturedpoint.h\
+        texture/texture.h\
+        texture/filter/filter.h\
+        texture/filter/bilinear.h\
+        texture/filter/mipmapper.h\
+        texture/square.h\
+        canvas/canvas.h\
+        view-controller/drawpanel.h\
+        view-controller/sizecontroller.h\
+        view-controller/doubleslider.h \

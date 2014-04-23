@@ -1,5 +1,5 @@
-#include <QImage>
 #include "canvas.h"
+#include <QImage>
 
 Canvas::Canvas(int w, int h)
     : width(w), height(h), image(w,h, QImage::Format_RGB888)

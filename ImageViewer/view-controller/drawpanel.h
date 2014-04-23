@@ -3,8 +3,8 @@
 
 #include <QWidget>
 #include <QPoint>
-#include "square.h"
-#include "canvas.h"
+#include "texture/square.h"
+#include "canvas/canvas.h"
 
 class DrawPanel : public QWidget, public Canvas
 {
