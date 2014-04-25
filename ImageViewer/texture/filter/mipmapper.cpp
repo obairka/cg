@@ -2,6 +2,13 @@
 #include "texture/texture.h"
 #include <QDebug>
 
+
+
+double Mipmapper::L1_THRESHOLD = 0.6;
+double Mipmapper::L2_THRESHOLD = 0.35;
+double Mipmapper::L3_THRESHOLD = 0.15;
+double Mipmapper::L4_THRESHOLD = 0.05;
+
 Mipmapper::Mipmapper()
 {
     this->type = 2;
@@ -9,15 +16,37 @@ Mipmapper::Mipmapper()
 
 QColor Mipmapper::filter(Texture *texture, const TexturedPoint &point ){
 
+    int level = 0;
 
-    double dsdp = point.get_tex_in_pixX()/texture->get_texel_size();
-    double dtdp = point.get_tex_in_pixY()/texture->get_texel_size();
+    double scaleX = texture->getScaleX();
+    double scaleY = texture->getScaleY();
 
-    int level = fabs(sqrt(pow(dsdp,2)+pow(dtdp,2)) );
-    if (level >= texture->get_LODs_count()) {
-        level = texture->get_LODs_count()-1;
+    double scale = std::min(scaleX, scaleY);
+
+    // scale [0;1] [1;10]
+    if (scale >= 1) {
+        level = 0;
     }
-
+    else {
+        // level
+        if (scale <= L4_THRESHOLD){
+            level = 4;
+        }
+        if (scale <= L3_THRESHOLD){
+            level = 3;
+        }
+        else
+        if (scale <= L2_THRESHOLD) {
+            level = 2;
+        }
+        else
+        if (scale <= L1_THRESHOLD) {
+            level = 1;
+        }
+        else {
+            level = 0;
+        }
+    }
     return bilinear(texture, point, level);
 }
 
@@ -43,12 +72,18 @@ QColor Mipmapper::bilinear(Texture* texture, const TexturedPoint& point, int lev
     fy = 1. - y_opp;
 
     const QImage& LOD = texture->get_LOD(level);
-    if (ix != size -1 && iy != size -1 ){
+
+    int dx = 1, dy = 1;
+    if (ix >= size -1) dx=-1;
+    if (iy >= size -1) dy=-1;
+
+   // if (ix != size -1 && iy != size -1 )
+    {
 
         QColor p1 = LOD.pixel(ix  , iy);
-        QColor p2 = LOD.pixel(ix+1, iy);
-        QColor p3 = LOD.pixel(ix  , iy+1);
-        QColor p4 = LOD.pixel(ix+1, iy+1);
+        QColor p2 = LOD.pixel(ix+dx, iy);
+        QColor p3 = LOD.pixel(ix  , iy+dy);
+        QColor p4 = LOD.pixel(ix+dx, iy+dy);
 
         QColor a, b, c;
 
@@ -67,5 +102,5 @@ QColor Mipmapper::bilinear(Texture* texture, const TexturedPoint& point, int lev
         return c;
     }
 
-    return LOD.pixel(ix, iy);
+    //return LOD.pixel(ix, iy);
 }

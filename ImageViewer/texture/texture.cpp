@@ -13,6 +13,7 @@ Texture::Texture(int max_size) : filter(0), loaded (false), max_size(max_size)
 {
     filter = &simpleFilter;
     this->max_size= find2(max_size);
+    scaleX = scaleY = 1;
 }
 
 
@@ -32,6 +33,23 @@ int Texture::find2(int a){
         a = a | (a >> m);
     a = a - (a >> 1);
     return a;
+}
+
+void Texture::setScaleX(double scaleX){
+    this->scaleX = scaleX;
+}
+
+
+void Texture::setScaleY(double scaleY){
+    this->scaleY = scaleY;
+}
+
+double Texture::getScaleX() const {
+    return scaleX;
+}
+
+double Texture::getScaleY() const {
+    return scaleY;
 }
 
 void Texture::buildLODs(){
